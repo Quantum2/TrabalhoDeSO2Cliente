@@ -9,12 +9,8 @@ Cliente::~Cliente()
 }
 
 int Cliente::connect(string texto) {
-	HANDLE hPipe;
-	LPTSTR lpvMessage;
-	TCHAR  chBuf[BUFSIZE];
-	BOOL   fSuccess = FALSE;
-	DWORD  cbRead, cbToWrite, cbWritten, dwMode;
-	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
+	lpvMessage = TEXT("Default message from client.");
+	fSuccess = FALSE;
 
 	TCHAR temp[BUFSIZE];
 	_tcscpy_s(temp, CA2T(texto.c_str()));                                //Nem sei o que fiz aqui, so sei que trabalha
@@ -121,12 +117,8 @@ int Cliente::connect(string texto) {
 }
 
 int Cliente::connect() {
-	HANDLE hPipe;
-	LPTSTR lpvMessage = TEXT("Default message from client.");
-	TCHAR  chBuf[BUFSIZE];
-	BOOL   fSuccess = FALSE;
-	DWORD  cbRead, cbToWrite, cbWritten, dwMode;
-	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
+	lpvMessage = TEXT("Default message from client.");
+	fSuccess = FALSE;
 
 	// Try to open a named pipe; wait for it, if necessary. 
 	while (1)
@@ -177,8 +169,15 @@ int Cliente::connect() {
 		return -1;
 	}
 
-	// Send a message to the pipe server. 
+	return 0;
+}
 
+void Cliente::enviarMensagem(string texto) {
+	TCHAR temp[BUFSIZE];
+	_tcscpy_s(temp, CA2T(texto.c_str()));                                //Nem sei o que fiz aqui, so sei que trabalha
+	lpvMessage = temp;
+
+	// Send a message to the pipe server. 
 	cbToWrite = (lstrlen(lpvMessage) + 1)*sizeof(TCHAR);
 	_tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, lpvMessage);
 
@@ -192,7 +191,7 @@ int Cliente::connect() {
 	if (!fSuccess)
 	{
 		_tprintf(TEXT("WriteFile to pipe failed. GLE=%d\n"), GetLastError());
-		return -1;
+		return;
 	}
 
 	printf("\nMessage sent to server, receiving reply as follows:\n");
@@ -217,13 +216,13 @@ int Cliente::connect() {
 	if (!fSuccess)
 	{
 		_tprintf(TEXT("ReadFile from pipe failed. GLE=%d\n"), GetLastError());
-		return -1;
+		return;
 	}
+}
 
+void Cliente::disconect() {
 	printf("\n<End of message, press ENTER to terminate connection and exit>");
 	_getch();
 
 	CloseHandle(hPipe);
-
-	return 0;
 }
