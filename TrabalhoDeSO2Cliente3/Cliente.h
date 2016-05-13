@@ -5,6 +5,7 @@
 #include <tchar.h>
 #include <atlstr.h>
 #include <string>
+#include "Utils.h"
 
 #define BUFSIZE 512
 
@@ -19,6 +20,10 @@ private:
 	BOOL   fSuccess;
 	DWORD  cbRead, cbToWrite, cbWritten, dwMode;
 	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
+
+	Jogo jogo;
+
+	void compareBuffer(string buffer);
 public:
 	Cliente();
 	~Cliente();

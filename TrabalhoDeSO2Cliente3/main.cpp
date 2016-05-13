@@ -1,9 +1,15 @@
 #include <iostream>
+#include <io.h>
+#include <fcntl.h>
 #include "Cliente.h"
+
+#define cout wcout
 
 using namespace std;
 
 int main() {
+	//_setmode(_fileno(stdout), _O_U16TEXT);
+
 	Cliente cliente;
 	cliente.connect();
 	

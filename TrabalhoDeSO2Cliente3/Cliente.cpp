@@ -210,7 +210,9 @@ void Cliente::enviarMensagem(string texto) {
 		if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
 			break;
 
-		_tprintf(TEXT("\"%s\"\n"), chBuf);
+		compareBuffer();
+
+		_tprintf(TEXT("\%s\n"), chBuf);
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)
