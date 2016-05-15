@@ -23,7 +23,7 @@ private:
 
 	Jogo jogo;
 
-	void compareBuffer(string buffer);
+	void compareBuffer(TCHAR buffer);
 public:
 	Cliente();
 	~Cliente();

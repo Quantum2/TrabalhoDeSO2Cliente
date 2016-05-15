@@ -1,5 +1,9 @@
 #include "Cliente.h"
 
+void Cliente::compareBuffer(TCHAR buffer)
+{
+}
+
 Cliente::Cliente()
 {
 }
@@ -210,7 +214,7 @@ void Cliente::enviarMensagem(string texto) {
 		if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
 			break;
 
-		compareBuffer();
+		compareBuffer(*chBuf);
 
 		_tprintf(TEXT("\%s\n"), chBuf);
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
