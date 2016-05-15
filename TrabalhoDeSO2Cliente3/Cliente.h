@@ -16,14 +16,15 @@ class Cliente
 private:
 	HANDLE hPipe;
 	LPTSTR lpvMessage;
-	TCHAR  chBuf[BUFSIZE];
+	//TCHAR  chBuf[BUFSIZE];
+	Mensagem chBuf;
 	BOOL   fSuccess;
 	DWORD  cbRead, cbToWrite, cbWritten, dwMode;
 	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
 
 	Jogo jogo;
 
-	void compareBuffer(TCHAR buffer);
+	void compareBuffer(Mensagem buffer);
 public:
 	Cliente();
 	~Cliente();
@@ -31,7 +32,7 @@ public:
 	int connect();
 	int connect(string texto);
 
-	void enviarMensagem(string texto);
+	void enviarMensagem(Mensagem m);
 
 	void disconect();
 };

@@ -40,7 +40,7 @@ int main() {
 	while (1) {
 		string temp;
 		Mensagem mensa;
-		cout << "Mensagem a enviar: ";
+		cout << "\nMensagem a enviar: ";
 		cin >> temp;
 
 		mensa.pid = pid;
@@ -51,7 +51,7 @@ int main() {
 			break;
 		}
 		else
-			cliente.enviarMensagem(temp);
+			cliente.enviarMensagem(mensa);
 	}
 
 	return 0;

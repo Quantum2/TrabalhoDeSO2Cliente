@@ -1,7 +1,8 @@
 #include "Cliente.h"
 
-void Cliente::compareBuffer(TCHAR buffer)
+void Cliente::compareBuffer(Mensagem buffer)
 {
+
 }
 
 Cliente::Cliente()
@@ -95,7 +96,7 @@ int Cliente::connect(string texto) {
 
 		fSuccess = ReadFile(
 			hPipe,    // pipe handle 
-			chBuf,    // buffer to receive reply 
+			&chBuf,    // buffer to receive reply 
 			BUFSIZE*sizeof(TCHAR),  // size of buffer 
 			&cbRead,  // number of bytes read 
 			NULL);    // not overlapped 
@@ -103,7 +104,7 @@ int Cliente::connect(string texto) {
 		if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
 			break;
 
-		_tprintf(TEXT("\"%s\"\n"), chBuf);
+		printf("\"%s\"\n", chBuf.msg);
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)
@@ -176,18 +177,14 @@ int Cliente::connect() {
 	return 0;
 }
 
-void Cliente::enviarMensagem(string texto) {
-	TCHAR temp[BUFSIZE];
-	_tcscpy_s(temp, CA2T(texto.c_str()));                                //Nem sei o que fiz aqui, so sei que trabalha
-	lpvMessage = temp;
-
+void Cliente::enviarMensagem(Mensagem m) {
 	// Send a message to the pipe server. 
-	cbToWrite = (lstrlen(lpvMessage) + 1)*sizeof(TCHAR);
-	_tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, lpvMessage);
+	cbToWrite = sizeof(m);
+	printf("Sending %d byte message: \"%s\"\n", cbToWrite, m.msg);
 
 	fSuccess = WriteFile(
 		hPipe,                  // pipe handle 
-		lpvMessage,             // message 
+		&m,                      // message 
 		cbToWrite,              // message length 
 		&cbWritten,             // bytes written 
 		NULL);                  // not overlapped 
@@ -206,17 +203,17 @@ void Cliente::enviarMensagem(string texto) {
 
 		fSuccess = ReadFile(
 			hPipe,    // pipe handle 
-			chBuf,    // buffer to receive reply 
-			BUFSIZE*sizeof(TCHAR),  // size of buffer 
+			&chBuf,    // buffer to receive reply 
+			sizeof(Mensagem),  // size of buffer 
 			&cbRead,  // number of bytes read 
 			NULL);    // not overlapped 
 
 		if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
 			break;
 
-		compareBuffer(*chBuf);
+		compareBuffer(chBuf);
 
-		_tprintf(TEXT("\%s\n"), chBuf);
+		printf("\%s\n", chBuf.msg);
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)
