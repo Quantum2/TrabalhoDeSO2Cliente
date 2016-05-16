@@ -41,7 +41,7 @@ int main() {
 		string temp;
 		Mensagem mensa;
 		cout << "\nMensagem a enviar: ";
-		cin >> temp;
+		getline(cin, temp);
 
 		mensa.pid = pid;
 		strcpy(mensa.msg, temp.c_str());

@@ -8,9 +8,11 @@ using namespace std;
 class Jogador
 {
 private:
-
+	string name;
+	int pid;
 public:
-
+	Jogador(string nome, int p);
+	~Jogador();
 };
 
 class Labirinto
@@ -25,12 +27,12 @@ class Jogo {
 private:
 	int estado = 1;
 	Labirinto lab;
-	vector<Jogador> jogadores;
 public:
 	Jogo();
 	~Jogo();
 
 	string lastCommand;
+	vector<Jogador> jogadores;
 
 	const int A_PROCURAR_CLIENTES = 1;
 	const int A_INICIAR_JOGO = 2;
