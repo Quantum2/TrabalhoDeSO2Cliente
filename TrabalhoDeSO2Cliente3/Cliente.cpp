@@ -1,31 +1,25 @@
 #include "Cliente.h"
 
+#define cout wcout
+#define printf wprintf
+
 static string anteriorM;
+static int modoJogo = 0;
 
 void Cliente::compareBuffer(Mensagem buffer)
 {
-	Consola consola;
 	string temp = buffer.msg;
 	string entrada;
 
 	if (temp == "EM FASE DE JOGO!!!" && anteriorM != temp)
 	{
-		consola.clrscr();
-		consola.clrscr();
-		consola.clrscr();
-		consola.clrscr();
+		Consola consola;
 		consola.clrscr();
 		cout << "Modo de jogo";
-		consola.getch();
+		modoJogo = 1;
 	}
 	if (temp == "EM FASE DE SAIR!!!" && anteriorM != temp) {
-		consola.clrscr();
-		consola.clrscr();
-		consola.clrscr();
-		consola.clrscr();
-		consola.clrscr();
-		cout << "Fase de jogo terminada" << endl << "Pressione qualquer tecla para sair" << endl;
-		consola.getch();
+		modoJogo = 2;
 	}
 	anteriorM = buffer.msg;
 }
@@ -64,7 +58,7 @@ void Cliente::iniciarListener()
 
 		if (!WaitNamedPipe(lpszPipenameListener, 20000))
 		{
-			printf("Could not open pipe: 20 second wait timed out.");
+			printf(L"Could not open pipe: 20 second wait timed out.");
 			return;
 		}
 	}
@@ -85,6 +79,7 @@ void Cliente::iniciarListener()
 
 Cliente::Cliente()
 {
+	modoJogo = 0;
 }
 
 Cliente::~Cliente()
@@ -129,7 +124,7 @@ int Cliente::connect(string texto) {
 
 		if (!WaitNamedPipe(lpszPipename, 20000))
 		{
-			printf("Could not open pipe: 20 second wait timed out.");
+			printf(L"Could not open pipe: 20 second wait timed out.");
 			return -1;
 		}
 	}
@@ -166,7 +161,7 @@ int Cliente::connect(string texto) {
 		return -1;
 	}
 
-	printf("\nMessage sent to server, receiving reply as follows:\n");
+	printf(L"\nMessage sent to server, receiving reply as follows:\n");
 
 	do
 	{
@@ -182,7 +177,7 @@ int Cliente::connect(string texto) {
 		if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
 			break;
 
-		printf("\"%s\"\n", chBuf.msg);
+		printf(L"\"%s\"\n", chBuf.msg);
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)
@@ -191,7 +186,7 @@ int Cliente::connect(string texto) {
 		return -1;
 	}
 
-	printf("\n<End of message, press ENTER to terminate connection and exit>");
+	printf(L"\n<End of message, press ENTER to terminate connection and exit>");
 	_getch();
 
 	CloseHandle(hPipe);
@@ -233,7 +228,7 @@ int Cliente::connect() {
 
 		if (!WaitNamedPipe(lpszPipename, 20000))
 		{
-			printf("Could not open pipe: 20 second wait timed out.");
+			printf(L"Could not open pipe: 20 second wait timed out.");
 			return -1;
 		}
 	}
@@ -293,7 +288,7 @@ DWORD WINAPI Cliente::threadListener(LPVOID lpvParam)
 void Cliente::enviarMensagem(Mensagem m) {
 	// Send a message to the pipe server. 
 	cbToWrite = sizeof(m);
-	printf("Sending %d byte message: \"%s\"\n", cbToWrite, m.msg);
+	cout << "Sending " << cbToWrite << " byte message: " << m.msg << endl;
 
 	fSuccess = WriteFile(
 		hPipe,                  // pipe handle 
@@ -307,7 +302,7 @@ void Cliente::enviarMensagem(Mensagem m) {
 		_tprintf(TEXT("WriteFile to pipe failed. GLE=%d\n"), GetLastError());
 		return;
 	}
-	printf("\nMessage sent to server, receiving reply as follows:\n");
+	printf(L"\nMessage sent to server, receiving reply as follows:\n");
 
 	do
 	{
@@ -323,7 +318,7 @@ void Cliente::enviarMensagem(Mensagem m) {
 			break;
 
 		compareBuffer(chBuf);
-		printf("\%s\n", chBuf.msg);
+		cout << chBuf.msg << endl;
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)
@@ -334,8 +329,13 @@ void Cliente::enviarMensagem(Mensagem m) {
 }
 
 void Cliente::disconect() {
-	printf("\n<End of message, press ENTER to terminate connection and exit>");
+	printf(L"\n<End of message, press ENTER to terminate connection and exit>");
 	_getch();
 
 	CloseHandle(hPipe);
+}
+
+int Cliente::getModoJogo()
+{
+	return modoJogo;
 }

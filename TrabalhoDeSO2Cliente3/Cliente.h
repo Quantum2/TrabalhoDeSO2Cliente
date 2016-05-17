@@ -8,7 +8,7 @@
 #include "Consola.h"
 #include "Utils.h"
 
-#define BUFSIZE 512
+#define BUFSIZE 1024
 
 using namespace std;
 
@@ -37,4 +37,5 @@ public:
 	int connect(string texto);
 	void enviarMensagem(Mensagem m);
 	void disconect();
+	int getModoJogo();
 };
