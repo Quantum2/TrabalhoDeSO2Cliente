@@ -15,25 +15,26 @@ class Cliente
 {
 private:
 	HANDLE hPipe;
+	HANDLE hPipeGeral;
 	LPTSTR lpvMessage;
-	//TCHAR  chBuf[BUFSIZE];
 	Mensagem chBuf;
 	BOOL   fSuccess;
 	DWORD  cbRead, cbToWrite, cbWritten, dwMode;
 	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
+	LPTSTR lpszPipenameListener = TEXT("\\\\.\\pipe\\pipeGeral");
 
 	Jogo jogo;
 
-	void compareBuffer(Mensagem buffer);
+	static void compareBuffer(Mensagem buffer);
+	void iniciarListener();
+	static DWORD WINAPI threadListener(LPVOID lpvParam);
 public:
 	Cliente();
 	~Cliente();
 
 	int connect();
 	int connect(string texto);
-
 	void enviarMensagem(Mensagem m);
-
 	void disconect();
 };
 
