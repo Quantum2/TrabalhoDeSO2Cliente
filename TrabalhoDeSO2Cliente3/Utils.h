@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 
+#define BUFSIZE 1024
+
 using namespace std;
 
 class Jogador
@@ -13,6 +15,7 @@ private:
 public:
 	Jogador(string nome, int p);
 	~Jogador();
+	int getPid();
 };
 
 class Labirinto
@@ -44,5 +47,6 @@ public:
 
 struct Mensagem {
 	int pid;
-	char msg[BUFSIZ];
+	char msg[BUFSIZE];
+	int pidsEnviar[128];
 };

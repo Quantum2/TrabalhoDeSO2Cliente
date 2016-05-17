@@ -11,7 +11,21 @@ void Cliente::compareBuffer(Mensagem buffer)
 	if (temp == "EM FASE DE JOGO!!!" && anteriorM != temp)
 	{
 		consola.clrscr();
+		consola.clrscr();
+		consola.clrscr();
+		consola.clrscr();
+		consola.clrscr();
 		cout << "Modo de jogo";
+		consola.getch();
+	}
+	if (temp == "EM FASE DE SAIR!!!" && anteriorM != temp) {
+		consola.clrscr();
+		consola.clrscr();
+		consola.clrscr();
+		consola.clrscr();
+		consola.clrscr();
+		cout << "Fase de jogo terminada" << endl << "Pressione qualquer tecla para sair" << endl;
+		consola.getch();
 	}
 	anteriorM = buffer.msg;
 }
