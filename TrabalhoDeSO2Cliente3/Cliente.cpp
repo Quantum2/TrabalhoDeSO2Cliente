@@ -1,8 +1,19 @@
 #include "Cliente.h"
 
+static string anteriorM;
+
 void Cliente::compareBuffer(Mensagem buffer)
 {
+	Consola consola;
+	string temp = buffer.msg;
+	string entrada;
 
+	if (temp == "EM FASE DE JOGO!!!" && anteriorM != temp)
+	{
+		consola.clrscr();
+		cout << "Modo de jogo";
+	}
+	anteriorM = buffer.msg;
 }
 
 void Cliente::iniciarListener()
@@ -245,7 +256,8 @@ DWORD WINAPI Cliente::threadListener(LPVOID lpvParam)
 	Mensagem buf;
 	DWORD readSize;
 
-	do
+	
+	while (true)
 	{
 		// Read from the pipe. 
 		fSucess = ReadFile(
@@ -259,10 +271,9 @@ DWORD WINAPI Cliente::threadListener(LPVOID lpvParam)
 			break;
 
 		compareBuffer(buf);
-		printf("\%s\n", buf.msg);
-	} while (!fSucess);  // repeat loop if ERROR_MORE_DATA 
+	}
 
-	return(0);
+	return 1;
 }
 
 void Cliente::enviarMensagem(Mensagem m) {

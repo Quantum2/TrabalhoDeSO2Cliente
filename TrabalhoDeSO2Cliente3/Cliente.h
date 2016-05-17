@@ -5,6 +5,7 @@
 #include <tchar.h>
 #include <atlstr.h>
 #include <string>
+#include "Consola.h"
 #include "Utils.h"
 
 #define BUFSIZE 512
@@ -37,4 +38,3 @@ public:
 	void enviarMensagem(Mensagem m);
 	void disconect();
 };
-
