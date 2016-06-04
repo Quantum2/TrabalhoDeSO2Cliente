@@ -13,8 +13,6 @@ void Cliente::compareBuffer(Mensagem buffer)
 
 	if (temp == "EM FASE DE JOGO!!!" && anteriorM != temp)
 	{
-		Consola consola;
-		consola.clrscr();
 		cout << "Modo de jogo";
 		modoJogo = 1;
 	}

@@ -4,9 +4,9 @@
 #include <fcntl.h>
 #include <windows.h>
 #include <tchar.h>		// Para chamada à função "sprintf" 
-#include "Consola.h"
 #include "Cliente.h"
 #include "Utils.h"
+#include "resource.h"
 
 #define TAM 255
 #define cout wcout
@@ -14,15 +14,9 @@
 using namespace std;
 
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
+Cliente cliente;
 
-int main() {
-	_setmode(_fileno(stdout), _O_U16TEXT);
-	int pid = GetCurrentProcessId();
-
-	Consola consola;
-	Cliente cliente;
-	cliente.connect();
-	
+int main() {	
 	while (1) {
 		if (cliente.getModoJogo() == 0) {
 			string temp;
@@ -30,7 +24,7 @@ int main() {
 			cout << "\n>> ";
 			getline(cin, temp);
 
-			mensa.pid = pid;
+			//mensa.pid = pid;
 			strcpy_s(mensa.msg, temp.c_str());
 
 			if (temp == "exit") {
@@ -42,12 +36,10 @@ int main() {
 		}
 		if (cliente.getModoJogo() == 1) {
 			//do game stuff here...
-			consola.clrscr();
 			cout << "Modo de jogo";
 		}
 		if (cliente.getModoJogo() == 2) {
 			string temp;
-			consola.clrscr();
 			cout << "Fase de jogo terminada" << endl << "Pressione qualquer tecla para sair" << endl;
 			cin >> temp;
 			exit(0);
@@ -57,6 +49,13 @@ int main() {
 	return 0;
 }
 
+// ============================================================================
+// FUNÇÂO DE PROCESSAMENTO DA JANELA
+// Neste exemplo vamos processar as mensagens:
+//		WM_CHAR				Guardar o caracter digitado nu buffer (sem mostrar)
+//							Chamar InvalidateRect() para originar WM_PAINT
+//		WM_PAINT			Mostrar o conteúdo do buffer com TextOut()
+// ============================================================================
 LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;				// handler para um Device Context
@@ -119,8 +118,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
 	return(0);
 }
 
+LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (Msg)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+
+	case WM_COMMAND:
+		switch (wParam)
+		{
+		case IDOK:
+			EndDialog(hWndDlg, 0);
+			return TRUE;
+		}
+		break;
+	}
+
+	return FALSE;
+}
+
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
+	cliente.connect();
+	int pid = GetCurrentProcessId();
+
 	HWND hWnd;			// handler da janela (a gerar por CreateWindow())
 	MSG lpMsg;			// Estrutura das mensagens
 	WNDCLASSEX wcApp;	// Estrutura que define a classe da janela
@@ -179,6 +201,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 								//  1)	"&lpMsg"=Endereço de uma estrutura do tipo MSG ("MSG lpMsg" ja foi 
 								//		declarada no início de WinMain()):
 
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, reinterpret_cast<DLGPROC>(DlgProc));
+
 	while (GetMessage(&lpMsg, NULL, 0, 0)) {
 		TranslateMessage(&lpMsg);			// Pré-processamento da mensagem
 		DispatchMessage(&lpMsg);			// Enviar a mensagem traduzida de volta
@@ -190,11 +214,3 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	// ============================================================================
 	return((int)lpMsg.wParam);	// Status = Parâmetro "wParam" da estrutura "lpMsg"
 }
-
-// ============================================================================
-// FUNÇÂO DE PROCESSAMENTO DA JANELA
-// Neste exemplo vamos processar as mensagens:
-//		WM_CHAR				Guardar o caracter digitado nu buffer (sem mostrar)
-//							Chamar InvalidateRect() para originar WM_PAINT
-//		WM_PAINT			Mostrar o conteúdo do buffer com TextOut()
-// ============================================================================
