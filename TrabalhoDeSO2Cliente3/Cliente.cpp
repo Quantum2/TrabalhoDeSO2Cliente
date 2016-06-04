@@ -24,59 +24,6 @@ void Cliente::compareBuffer(Mensagem buffer)
 	anteriorM = buffer.msg;
 }
 
-void Cliente::iniciarListener()
-{
-	lpvMessage = TEXT("Default message from client.");
-	fSuccess = FALSE;
-
-	// Try to open a named pipe; wait for it, if necessary. 
-	while (1)
-	{
-		hPipeGeral = CreateFile(
-			lpszPipenameListener,   // pipe name 
-			GENERIC_READ |  // read and write access 
-			GENERIC_WRITE,
-			0,              // no sharing 
-			NULL,           // default security attributes
-			OPEN_EXISTING,  // opens existing pipe 
-			0,              // default attributes 
-			NULL);          // no template file 
-							// Break if the pipe handle is valid. 
-
-		if (hPipeGeral != INVALID_HANDLE_VALUE)
-			break;
-
-		// Exit if an error other than ERROR_PIPE_BUSY occurs. 
-
-		if (GetLastError() != ERROR_PIPE_BUSY)
-		{
-			_tprintf(TEXT("Could not open pipe. GLE=%d\n"), GetLastError());
-			return;
-		}
-
-		// All pipe instances are busy, so wait for 20 seconds. 
-
-		if (!WaitNamedPipe(lpszPipenameListener, 20000))
-		{
-			printf(L"Could not open pipe: 20 second wait timed out.");
-			return;
-		}
-	}
-
-	// The pipe connected; change to message-read mode. 
-	dwMode = PIPE_READMODE_MESSAGE;
-	fSuccess = SetNamedPipeHandleState(
-		hPipeGeral,    // pipe handle 
-		&dwMode,       // new pipe mode 
-		NULL,          // don't set maximum bytes 
-		NULL);         // don't set maximum time 
-	if (!fSuccess)
-	{
-		_tprintf(TEXT("SetNamedPipeHandleState failed. GLE=%d\n"), GetLastError());
-		return;
-	}
-}
-
 Cliente::Cliente()
 {
 	modoJogo = 0;
@@ -246,43 +193,7 @@ int Cliente::connect() {
 		return -1;
 	}
 
-	iniciarListener();
-	// Create a thread for this client. 
-	hThread = CreateThread(
-		NULL,              // no security attribute 
-		0,                 // default stack size 
-		threadListener,    // thread proc
-		(LPVOID)hPipeGeral,// thread parameter 
-		0,                 // not suspended 
-		&dwThreadId);      // returns thread ID 
-
 	return 0;
-}
-
-DWORD WINAPI Cliente::threadListener(LPVOID lpvParam)
-{
-	bool fSucess;
-	Mensagem buf;
-	DWORD readSize;
-
-	
-	while (true)
-	{
-		// Read from the pipe. 
-		fSucess = ReadFile(
-			(HANDLE)lpvParam,    // pipe handle 
-			&buf,    // buffer to receive reply 
-			sizeof(Mensagem),  // size of buffer 
-			&readSize,  // number of bytes read 
-			NULL);    // not overlapped 
-
-		if (!fSucess && GetLastError() != ERROR_MORE_DATA)
-			break;
-
-		compareBuffer(buf);
-	}
-
-	return 1;
 }
 
 void Cliente::enviarMensagem(Mensagem m) {
