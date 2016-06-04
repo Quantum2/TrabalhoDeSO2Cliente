@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
@@ -131,6 +132,10 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 		case IDOK:
 			EndDialog(hWndDlg, 0);
 			return TRUE;
+		case IDC_BUTTON1:
+			LPWSTR temp = L"INIT";
+			GetDlgItemText(hWndDlg, IDC_EDIT1, temp, 25);
+			return true;
 		}
 		break;
 	}
@@ -200,6 +205,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 								// Parâmetros de "getMessage":
 								//  1)	"&lpMsg"=Endereço de uma estrutura do tipo MSG ("MSG lpMsg" ja foi 
 								//		declarada no início de WinMain()):
+
 
 	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, reinterpret_cast<DLGPROC>(DlgProc));
 
