@@ -133,9 +133,17 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			EndDialog(hWndDlg, 0);
 			return TRUE;
 		case IDC_BUTTON1:
-			LPWSTR temp = L"INIT";
-			GetDlgItemText(hWndDlg, IDC_EDIT1, temp, 25);
-			return true;
+			Mensagem mensa;
+			TCHAR temp[TAM];
+			string tempS;
+			GetDlgItemText(hWndDlg, IDC_EDIT1, temp, sizeof(temp));
+
+			mensa.pid = getpid();
+			wstring ws(temp);
+			tempS = "login " + string(ws.begin(), ws.end());
+			strcpy(mensa.msg, tempS.c_str());
+
+			return TRUE;
 		}
 		break;
 	}
@@ -207,7 +215,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 								//		declarada no início de WinMain()):
 
 
-	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, reinterpret_cast<DLGPROC>(DlgProc));
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, DlgProc);
 
 	while (GetMessage(&lpMsg, NULL, 0, 0)) {
 		TranslateMessage(&lpMsg);			// Pré-processamento da mensagem
