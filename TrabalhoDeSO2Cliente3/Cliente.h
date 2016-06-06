@@ -5,7 +5,6 @@
 #include <tchar.h>
 #include <atlstr.h>
 #include <string>
-#include "Consola.h"
 #include "Utils.h"
 
 #define BUFSIZE 1024
@@ -16,19 +15,15 @@ class Cliente
 {
 private:
 	HANDLE hPipe;
-	HANDLE hPipeGeral;
 	LPTSTR lpvMessage;
 	Mensagem chBuf;
 	BOOL   fSuccess;
 	DWORD  cbRead, cbToWrite, cbWritten, dwMode;
 	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
-	LPTSTR lpszPipenameListener = TEXT("\\\\.\\pipe\\pipeGeral");
 
 	Jogo jogo;
 
 	static void compareBuffer(Mensagem buffer);
-	void iniciarListener();
-	static DWORD WINAPI threadListener(LPVOID lpvParam);
 public:
 	Cliente();
 	~Cliente();
