@@ -21,8 +21,33 @@ enum{ID_PLAY, ID_EXIT};
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
 
-void configurarMenuInicial() {
+HWND hwndButton;
+HWND hwndButton2;
 
+void actualizarMapa() {
+	Mensagem mensa;
+	mensa.pid = _getpid();
+	strcpy(mensa.msg, "actualizar");
+	cliente.enviarMensagem(mensa);
+
+
+}
+
+void configurarMenuInicial(HWND hw) {
+	DestroyWindow(hwndButton);
+	DestroyWindow(hwndButton2);
+
+	PAINTSTRUCT PtStc;
+	InvalidateRect(hw, NULL, 1);
+	HDC hdc = BeginPaint(hw, &PtStc);
+	HBRUSH NewBrush = CreateSolidBrush(RGB(0, 0, 0));
+
+	SelectObject(hdc, NewBrush);
+	Rectangle(hdc, 0, 0, 800, 600);
+	DeleteObject(NewBrush);
+	EndPaint(hw, &PtStc);
+
+	actualizarMapa();
 }
 
 // ============================================================================
@@ -94,7 +119,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
 			Mensagem mensa;
 			mensa.pid = _getpid();
 			strcpy(mensa.msg, "jogar");
-			configurarMenuInicial();
+			configurarMenuInicial(hWnd);
 			break;
 		case ID_EXIT:
 			exit(0);
@@ -212,7 +237,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	RECT tamJanelaMain;
 	GetWindowRect(hWnd, &tamJanelaMain);
 
-	HWND hwndButton = CreateWindow(
+	hwndButton = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"INICIAR JOGO",      // Button text 
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
@@ -224,7 +249,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 		(HMENU) ID_PLAY,       // No menu.
 		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
-	HWND hwndButton2 = CreateWindow(
+	hwndButton2 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"SAIR",      // Button text 
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
@@ -242,6 +267,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	HDC hdc = BeginPaint(hWnd, &PtStc);
 	if (res != 0) {
 		TextOut(hdc, 0, 0, TEXT("Conexão ao servidor falhada     "), strlen("Conexão ao servidor falhada     "));
+		EnableWindow(hwndButton, false);
 	}
 	else
 	{
