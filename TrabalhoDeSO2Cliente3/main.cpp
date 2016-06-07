@@ -17,39 +17,6 @@ using namespace std;
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
 
-int main() {	
-	while (1) {
-		if (cliente.getModoJogo() == 0) {
-			string temp;
-			Mensagem mensa;
-			cout << "\n>> ";
-			getline(cin, temp);
-
-			//mensa.pid = pid;
-			strcpy_s(mensa.msg, temp.c_str());
-
-			if (temp == "exit") {
-				cliente.disconect();
-				break;
-			}
-			else
-				cliente.enviarMensagem(mensa);
-		}
-		if (cliente.getModoJogo() == 1) {
-			//do game stuff here...
-			cout << "Modo de jogo";
-		}
-		if (cliente.getModoJogo() == 2) {
-			string temp;
-			cout << "Fase de jogo terminada" << endl << "Pressione qualquer tecla para sair" << endl;
-			cin >> temp;
-			exit(0);
-		}
-	}
-
-	return 0;
-}
-
 void configurarMenuInicial() {
 
 }
@@ -137,19 +104,18 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			EndDialog(hWndDlg, 0);
 			return TRUE;
 		case IDC_BUTTON1:
-			int res;
 			Mensagem mensa;
 			TCHAR temp[TAM];
 			string tempS;
 			GetDlgItemText(hWndDlg, IDC_EDIT1, temp, sizeof(temp));
 
-			mensa.pid = getpid();
+			mensa.pid = _getpid();
 			wstring ws(temp);
 			tempS = "login " + string(ws.begin(), ws.end());
-			strcpy(mensa.msg, tempS.c_str());
+			strcpy_s(mensa.msg, tempS.c_str());
 
 			configurarMenuInicial();
-			EndDialog(hWndDlg, res);
+			EndDialog(hWndDlg, NULL);
 
 			return TRUE;
 		}
@@ -197,7 +163,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	// ============================================================================
 	hWnd = CreateWindow(
 		szProgName,				// Nome da janela e/ou programa
-		TEXT("Mostrar Message Box"),	// Título da janela
+		TEXT("Trabalho de SO2"),	// Título da janela
 		WS_OVERLAPPEDWINDOW,	// Estilo da janela 
 		CW_USEDEFAULT,			// Posição x 
 		CW_USEDEFAULT,			// Posição y 
@@ -224,6 +190,34 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 
 
 	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, reinterpret_cast<DLGPROC>(DlgProc));
+
+	RECT tamJanelaMain;
+	GetWindowRect(hWnd, &tamJanelaMain);
+
+	HWND hwndButton = CreateWindow(
+		L"BUTTON",  // Predefined class; Unicode assumed 
+		L"INICIAR JOGO",      // Button text 
+		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+		int(tamJanelaMain.right / 2),         // x position 
+		int(tamJanelaMain.bottom / 2),         // y position 
+		100,        // Button width
+		80,        // Button height
+		hWnd,     // Parent window
+		NULL,       // No menu.
+		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
+		NULL);      // Pointer not needed.
+	HWND hwndButton2 = CreateWindow(
+		L"BUTTON",  // Predefined class; Unicode assumed 
+		L"SAIR",      // Button text 
+		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
+		int(tamJanelaMain.right / 2),         // x position 
+		int(tamJanelaMain.bottom / 2) + 100,         // y position 
+		100,        // Button width
+		80,        // Button height
+		hWnd,     // Parent window
+		NULL,       // No menu.
+		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
+		NULL);      // Pointer not needed.
 
 	while (GetMessage(&lpMsg, NULL, 0, 0)) {
 		TranslateMessage(&lpMsg);			// Pré-processamento da mensagem
