@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
@@ -8,11 +7,16 @@
 #include "Cliente.h"
 #include "Utils.h"
 #include "resource.h"
+#include "Jogo.h"
 
 #define TAM 255
+#define RES_X 800
+#define RES_Y 600
 #define cout wcout
 
 using namespace std;
+
+enum{ID_PLAY, ID_EXIT};
 
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
@@ -83,6 +87,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 		// Restantes mensagens têm processamento default
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_PLAY:
+			Mensagem mensa;
+			mensa.pid = _getpid();
+			strcpy(mensa.msg, "jogar");
+			configurarMenuInicial();
+			break;
+		case ID_EXIT:
+			exit(0);
+			break;
+		default:
+			break;
+		}
+		break;
 	default:
 		return(DefWindowProc(hWnd, messg, wParam, lParam));
 		break;
@@ -114,7 +134,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			tempS = "login " + string(ws.begin(), ws.end());
 			strcpy_s(mensa.msg, tempS.c_str());
 
-			configurarMenuInicial();
+			cliente.enviarMensagem(mensa);
 			EndDialog(hWndDlg, NULL);
 
 			return TRUE;
@@ -127,7 +147,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
-	cliente.connect();
+	int res = cliente.connect();
 	int pid = GetCurrentProcessId();
 
 	HWND hWnd;			// handler da janela (a gerar por CreateWindow())
@@ -164,11 +184,11 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	hWnd = CreateWindow(
 		szProgName,				// Nome da janela e/ou programa
 		TEXT("Trabalho de SO2"),	// Título da janela
-		WS_OVERLAPPEDWINDOW,	// Estilo da janela 
+		WS_OVERLAPPEDWINDOW  ^ WS_THICKFRAME,	// Estilo da janela 
 		CW_USEDEFAULT,			// Posição x 
 		CW_USEDEFAULT,			// Posição y 
-		CW_USEDEFAULT,			// Largura 
-		CW_USEDEFAULT,			// Altura 
+		RES_X,			// Largura 
+		RES_Y,			// Altura 
 		(HWND)HWND_DESKTOP,	// handle da janela pai (HWND_DESKTOP para 1ª)
 		(HMENU)NULL,			// handle do menu (se tiver menu)
 		(HINSTANCE)hInst,			// handle da instância actual (vem de WinMain())
@@ -187,8 +207,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 								// Parâmetros de "getMessage":
 								//  1)	"&lpMsg"=Endereço de uma estrutura do tipo MSG ("MSG lpMsg" ja foi 
 								//		declarada no início de WinMain()):
-
-
 	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, reinterpret_cast<DLGPROC>(DlgProc));
 
 	RECT tamJanelaMain;
@@ -198,26 +216,38 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"INICIAR JOGO",      // Button text 
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-		int(tamJanelaMain.right / 2),         // x position 
-		int(tamJanelaMain.bottom / 2),         // y position 
+		350,         // x position 
+		260,         // y position 
 		100,        // Button width
 		80,        // Button height
 		hWnd,     // Parent window
-		NULL,       // No menu.
+		(HMENU) ID_PLAY,       // No menu.
 		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
 	HWND hwndButton2 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"SAIR",      // Button text 
 		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-		int(tamJanelaMain.right / 2),         // x position 
-		int(tamJanelaMain.bottom / 2) + 100,         // y position 
+		350,         // x position 
+		260 + 100,         // y position 
 		100,        // Button width
 		80,        // Button height
 		hWnd,     // Parent window
-		NULL,       // No menu.
+		(HMENU) ID_EXIT,       // No menu.
 		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
+
+	PAINTSTRUCT PtStc;
+	InvalidateRect(hWnd, NULL, 1);
+	HDC hdc = BeginPaint(hWnd, &PtStc);
+	if (res != 0) {
+		TextOut(hdc, 0, 0, TEXT("Conexão ao servidor falhada     "), strlen("Conexão ao servidor falhada     "));
+	}
+	else
+	{
+		TextOut(hdc, 0, 0, TEXT("Ligado ao servidor de jogo     "), strlen("Ligado ao servidor de jogo     "));
+	}
+	EndPaint(hWnd, &PtStc);
 
 	while (GetMessage(&lpMsg, NULL, 0, 0)) {
 		TranslateMessage(&lpMsg);			// Pré-processamento da mensagem
