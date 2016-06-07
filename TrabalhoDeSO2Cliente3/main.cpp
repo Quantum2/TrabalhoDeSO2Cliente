@@ -50,6 +50,10 @@ int main() {
 	return 0;
 }
 
+void configurarMenuInicial() {
+
+}
+
 // ============================================================================
 // FUNÇÂO DE PROCESSAMENTO DA JANELA
 // Neste exemplo vamos processar as mensagens:
@@ -133,6 +137,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			EndDialog(hWndDlg, 0);
 			return TRUE;
 		case IDC_BUTTON1:
+			int res;
 			Mensagem mensa;
 			TCHAR temp[TAM];
 			string tempS;
@@ -142,6 +147,9 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			wstring ws(temp);
 			tempS = "login " + string(ws.begin(), ws.end());
 			strcpy(mensa.msg, tempS.c_str());
+
+			configurarMenuInicial();
+			EndDialog(hWndDlg, res);
 
 			return TRUE;
 		}
@@ -215,7 +223,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 								//		declarada no início de WinMain()):
 
 
-	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, DlgProc);
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_LOGIN), hWnd, reinterpret_cast<DLGPROC>(DlgProc));
 
 	while (GetMessage(&lpMsg, NULL, 0, 0)) {
 		TranslateMessage(&lpMsg);			// Pré-processamento da mensagem
