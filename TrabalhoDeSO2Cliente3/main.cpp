@@ -115,6 +115,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		// Limpar janela e forçar WM_PAINT
 		InvalidateRect(hWnd, NULL, 1);
 
+		//LOGICA DE JOGO - Toggle de pedra, machado, mão -. fica aqui?
+
+
+
 		break;
 		//==============================================================================
 		// Mostrar resposta dada à MsgBox
