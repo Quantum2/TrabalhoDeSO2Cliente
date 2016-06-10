@@ -3,7 +3,8 @@
 #include <iostream>
 #include <string>
 
-#define BUFSIZE 1024
+#define BUFSIZE 2048
+#define TAM_LABIRINTO 50
 
 using namespace std;
 
@@ -48,5 +49,6 @@ public:
 struct Mensagem {
 	int pid;
 	char msg[BUFSIZE];
+	char** mapa;
 	int pidsEnviar[128];
 };
