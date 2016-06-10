@@ -16,7 +16,7 @@
 
 using namespace std;
 
-enum{ID_PLAY, ID_EXIT};
+enum { ID_PLAY, ID_EXIT };
 
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
@@ -57,9 +57,9 @@ void configurarMenuInicial(HWND hw) {
 //							Chamar InvalidateRect() para originar WM_PAINT
 //		WM_PAINT			Mostrar o conteúdo do buffer com TextOut()
 // ============================================================================
-LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   //trata da janela principal 
 {
-	HDC hdc;				// handler para um Device Context
+	HDC hdc;				// handler para um Device Context - superficie de desenho
 	TCHAR str[TAM];			// Buffer para caracteres recolhidos do teclado
 	static int resposta;	// Resultado de resposta à MsgBox
 	PAINTSTRUCT PtStc;		// Ponteiro para estrutura de WM_PAINT
@@ -77,6 +77,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)
 		//		IDABORT, IDRETRY, IDIGNORE, IDCANCEL, IDNO, IDYES, IDOK
 		//==============================================================================
 		// Mensagem WM_CHAR: Caracter (normal) foi digitado no teclado
+		//WM_KEYDOWN -  setas do teclado 
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_LEFT:
+
+			// Process the LEFT ARROW key. 
+			_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '<-'"), wParam);
+			resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_YESNOCANCEL | MB_ICONQUESTION);
+			InvalidateRect(hWnd, NULL, 1);
+			break;
+
+		case VK_RIGHT:
+
+			// Process the RIGHT ARROW key. 
+
+			break;
+
+		case VK_UP:
+
+			// Process the UP ARROW key. 
+
+			break;
+
+		case VK_DOWN:
+
+			// Process the DOWN ARROW key. 
+
+			break;
+		}
 	case WM_CHAR:
 
 		_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '%c'"), wParam);
@@ -246,7 +276,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 		100,        // Button width
 		80,        // Button height
 		hWnd,     // Parent window
-		(HMENU) ID_PLAY,       // No menu.
+		(HMENU)ID_PLAY,       // No menu.
 		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
 	hwndButton2 = CreateWindow(
@@ -258,7 +288,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 		100,        // Button width
 		80,        // Button height
 		hWnd,     // Parent window
-		(HMENU) ID_EXIT,       // No menu.
+		(HMENU)ID_EXIT,       // No menu.
 		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
 
