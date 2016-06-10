@@ -85,7 +85,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 
 			// Process the LEFT ARROW key. 
 			_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '<-'"), wParam);
-			resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_YESNOCANCEL | MB_ICONQUESTION);
+			resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_ICONQUESTION);
 			InvalidateRect(hWnd, NULL, 1);
 			break;
 
