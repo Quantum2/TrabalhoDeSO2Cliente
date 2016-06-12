@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <Windows.h>
 
 #define BUFSIZE 2048
 #define TAM_LABIRINTO 50
@@ -46,9 +47,15 @@ public:
 	int getEstado();
 };
 
-struct Mensagem {
+struct Mapa {
+	char mapaEnv[TAM_LABIRINTO][TAM_LABIRINTO * 3];
+};
+
+struct Mensagem { //cliente para servidor
 	int pid;
 	char msg[BUFSIZE];
-	char** mapa;
 	int pidsEnviar[128];
+	Mapa mapa;
 };
+
+wchar_t *convertCharArrayToLPCWSTR(const char* charArray);
