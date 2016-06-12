@@ -82,16 +82,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		switch (wParam)
 		{
 		case VK_LEFT:
-
+			Mensagem mensa;
 			// Process the LEFT ARROW key. 
-			_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '<-'"), wParam);
+			/*_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '<-'"), wParam);
 			resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_ICONQUESTION);
-			InvalidateRect(hWnd, NULL, 1);
+			InvalidateRect(hWnd, NULL, 1);*/
+
+			strcpy(mensa.msg, "esquerda");
+			cliente.enviarMensagem(mensa);
 			break;
 
 		case VK_RIGHT:
 
-			// Process the RIGHT ARROW key. 
+			//moveDireita();
 
 			break;
 
@@ -201,7 +204,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
-{
+ {
 	int res = cliente.connect();
 	int pid = GetCurrentProcessId();
 
