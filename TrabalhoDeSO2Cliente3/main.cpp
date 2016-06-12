@@ -24,13 +24,22 @@ Cliente cliente;
 HWND hwndButton;
 HWND hwndButton2;
 
-void actualizarMapa() {
+void actualizarMapa(HWND hw) {
+	PAINTSTRUCT PtStc;
 	Mensagem mensa;
+	Mapa mapa;
 	mensa.pid = _getpid();
 	strcpy(mensa.msg, "actualizar");
 	cliente.enviarMensagem(mensa);
+	mapa = cliente.getMapa();
 
-
+	InvalidateRect(hw, NULL, 1);
+	HDC hdc = BeginPaint(hw, &PtStc);
+	for (size_t i = 0; i < TAM_LABIRINTO; i++)
+	{
+		TextOut(hdc, 0, i, convertCharArrayToLPCWSTR(mapa.mapaEnv[i]), strlen(mapa.mapaEnv[i]));
+	}
+	EndPaint(hw, &PtStc);
 }
 
 void configurarMenuInicial(HWND hw) {
@@ -47,7 +56,7 @@ void configurarMenuInicial(HWND hw) {
 	DeleteObject(NewBrush);
 	EndPaint(hw, &PtStc);
 
-	actualizarMapa();
+	actualizarMapa(hw);
 }
 
 // ============================================================================
