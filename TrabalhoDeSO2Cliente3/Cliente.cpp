@@ -5,6 +5,7 @@
 
 static string anteriorM;
 static int modoJogo = 0;
+Mapa mapaLocal;
 
 void Cliente::compareBuffer(Mensagem buffer)
 {
@@ -228,6 +229,7 @@ void Cliente::enviarMensagem(Mensagem m) {
 
 		compareBuffer(chBuf);
 		cout << chBuf.msg << endl;
+		mapaLocal = chBuf.mapa;
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)
@@ -247,4 +249,9 @@ void Cliente::disconect() {
 int Cliente::getModoJogo()
 {
 	return modoJogo;
+}
+
+Mapa Cliente::getMapa()
+{
+	return mapaLocal;
 }

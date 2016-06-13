@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <io.h>
+#include <sstream>
 #include <fcntl.h>
 #include <windows.h>
 #include <tchar.h>		// Para chamada à função "sprintf" 
@@ -24,13 +25,70 @@ Cliente cliente;
 HWND hwndButton;
 HWND hwndButton2;
 
-void actualizarMapa() {
+HBITMAP hBitmap = NULL;
+HBITMAP hBitmap2 = NULL;
+HBITMAP hBitmap3 = NULL;
+HINSTANCE inst = NULL;
+
+void actualizarMapa(HWND hw) {
+	PAINTSTRUCT PtStc;
+	BITMAP 		bitmap;
+	HDC			hdc;
+	HDC 		hdcMem;
+	HGDIOBJ 	oldBitmap;
 	Mensagem mensa;
+	Mapa mapa;
+	int x, y;
+
 	mensa.pid = _getpid();
 	strcpy(mensa.msg, "actualizar");
 	cliente.enviarMensagem(mensa);
+	mapa = cliente.getMapa();
 
+	InvalidateRect(hw, NULL, 1);
+	hdc = BeginPaint(hw, &PtStc);
+	hdcMem = CreateCompatibleDC(hdc);
+	x = 0;
 
+	for (size_t i = 0; i < TAM_LABIRINTO; i++)
+	{
+		int counter = 0;
+		char* temp;
+
+		y = 0;
+		temp = mapa.mapaEnv[i];
+		string tempS(temp);
+		string buf; // Have a buffer string
+		stringstream ss(tempS); // Insert the string into a stream
+		vector<string> tokens; // Create vector to hold our words
+
+		while (ss >> buf)
+			tokens.push_back(buf);
+
+		for (size_t j = 0; j < tokens.size(); j++)
+		{
+			if (tokens[j] == "_")
+			{
+				//desernhar bitmpas a apartir daqui
+				oldBitmap = SelectObject(hdcMem, hBitmap2);
+				GetObject(hBitmap2, sizeof(bitmap), &bitmap);
+				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+			}
+			if (tokens[j] == "J")
+			{
+				//desernhar bitmpas a apartir daqui
+				oldBitmap = SelectObject(hdcMem, hBitmap);
+				GetObject(hBitmap, sizeof(bitmap), &bitmap);
+				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+			}
+			y = y + 50;
+		}
+		x = x + 50;
+	}
+
+	SelectObject(hdcMem, oldBitmap);
+	DeleteDC(hdcMem);
+	EndPaint(hw, &PtStc);
 }
 
 void configurarMenuInicial(HWND hw) {
@@ -47,7 +105,7 @@ void configurarMenuInicial(HWND hw) {
 	DeleteObject(NewBrush);
 	EndPaint(hw, &PtStc);
 
-	actualizarMapa();
+	actualizarMapa(hw);
 }
 
 // ============================================================================
@@ -82,16 +140,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		switch (wParam)
 		{
 		case VK_LEFT:
-
+			Mensagem mensa;
 			// Process the LEFT ARROW key. 
-			_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '<-'"), wParam);
+			/*_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '<-'"), wParam);
 			resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_ICONQUESTION);
-			InvalidateRect(hWnd, NULL, 1);
+			InvalidateRect(hWnd, NULL, 1);*/
+
+			strcpy(mensa.msg, "esquerda");
+			cliente.enviarMensagem(mensa);
 			break;
 
 		case VK_RIGHT:
 
-			// Process the RIGHT ARROW key. 
+			//moveDireita();
 
 			break;
 
@@ -143,6 +204,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		// Terminar e Processamentos default
 		//==============================================================================
 	case WM_DESTROY:
+		DeleteObject(hBitmap);
 		PostQuitMessage(0);
 		break;
 		// Restantes mensagens têm processamento default
@@ -205,9 +267,12 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 }
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
-{
+ {
 	int res = cliente.connect();
 	int pid = GetCurrentProcessId();
+	inst = hInst;
+	hBitmap = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
+	hBitmap2 = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP2), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
 
 	HWND hWnd;			// handler da janela (a gerar por CreateWindow())
 	MSG lpMsg;			// Estrutura das mensagens

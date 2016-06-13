@@ -33,4 +33,5 @@ public:
 	void enviarMensagem(Mensagem m);
 	void disconect();
 	int getModoJogo();
+	Mapa getMapa();
 };
