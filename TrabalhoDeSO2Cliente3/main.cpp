@@ -191,6 +191,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 
 
 		//desactivei isto 
+
 		/*
 		// Activar Message Box (Yes, No, Cancel) e receber a resposta
 		resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_YESNOCANCEL | MB_ICONQUESTION);
