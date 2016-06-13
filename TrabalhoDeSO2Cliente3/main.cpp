@@ -201,6 +201,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		// OutputDebugString(str); //serve  pra ver cenas na janela de output
 		
 
+		//LOGICA DE JOGO - Toggle de pedra, machado, mão -. fica aqui?
+
+
+
 		break;
 		//==============================================================================
 		// Mostrar resposta dada à MsgBox
