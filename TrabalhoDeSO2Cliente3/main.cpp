@@ -69,14 +69,14 @@ void actualizarMapa(HWND hw) {
 		{
 			if (tokens[j] == "_")
 			{
-				//desernhar bitmpas a apartir daqui
+				//desenhar bitmaps a partir daqui
 				oldBitmap = SelectObject(hdcMem, hBitmap2);
 				GetObject(hBitmap2, sizeof(bitmap), &bitmap);
 				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
 			}
 			if (tokens[j] == "J")
 			{
-				//desernhar bitmpas a apartir daqui
+				//desenhar bitmaps a partir daqui
 				oldBitmap = SelectObject(hdcMem, hBitmap);
 				GetObject(hBitmap, sizeof(bitmap), &bitmap);
 				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
@@ -139,42 +139,67 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		case VK_LEFT:
-			Mensagem mensa;
-			// Process the LEFT ARROW key. 
-			/*_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '<-'"), wParam);
-			resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_ICONQUESTION);
-			InvalidateRect(hWnd, NULL, 1);*/
+		
+		Mensagem mensa;
 
-			strcpy(mensa.msg, "esquerda");
+		case VK_LEFT:
+			// Process the LEFT ARROW key. 
+			
+			strcpy_s(mensa.msg, "esquerda");
+			cliente.enviarMensagem(mensa);
+			strcpy_s(mensa.msg, "actualizar");
 			cliente.enviarMensagem(mensa);
 			break;
 
 		case VK_RIGHT:
+			
 
-			//moveDireita();
-
+			strcpy(mensa.msg, "direita");
+			cliente.enviarMensagem(mensa);
+			strcpy(mensa.msg, "actualizar");
+			cliente.enviarMensagem(mensa);
 			break;
+
 
 		case VK_UP:
 
-			// Process the UP ARROW key. 
 
+			strcpy(mensa.msg, "cima");
+			cliente.enviarMensagem(mensa);
+			strcpy(mensa.msg, "actualizar");
+			cliente.enviarMensagem(mensa);
 			break;
 
 		case VK_DOWN:
 
-			// Process the DOWN ARROW key. 
 
+			strcpy(mensa.msg, "baixo");
+			cliente.enviarMensagem(mensa);
+			strcpy(mensa.msg, "actualizar");
+			cliente.enviarMensagem(mensa);
 			break;
 		}
 	case WM_CHAR:
+	 
+		
+		//TOGGLES DO JOGADOR - armas, atacar - ficam aqui  
+		
+		/*if (wParam=='P' || wParama=='p') togglePedra();
+		 else if (wParam == 'M' || wParam == 'm') toggleMachado();
+		 else if (wParam == ' ') atacar();
+		*/
 
-		_stprintf_s(str, TAM / sizeof(TCHAR), TEXT("O caracter digitado foi '%c'"), wParam);
+
+		//desactivei isto 
+		/*
 		// Activar Message Box (Yes, No, Cancel) e receber a resposta
 		resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_YESNOCANCEL | MB_ICONQUESTION);
 		// Limpar janela e forçar WM_PAINT
 		InvalidateRect(hWnd, NULL, 1);
+		 */
+		
+		// OutputDebugString(str); //serve  pra ver cenas na janela de output
+		
 
 		break;
 		//==============================================================================
@@ -182,8 +207,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		//==============================================================================
 	case WM_PAINT:
 		// Afixar na janela a resposta que foi dada à MsgBox
+		
+		
 		hdc = BeginPaint(hWnd, &PtStc);
-		switch (resposta) {
+		/*switch (resposta) {
 		case IDYES:
 			TextOut(hdc, 0, 0, TEXT("Confirmado     "), 15);
 			break;
@@ -195,6 +222,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 			break;
 		}
 		EndPaint(hWnd, &PtStc);
+		*/
+
 		break;
 		//==============================================================================
 		// Terminar e Processamentos default
@@ -342,8 +371,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 		80,        // Button height
 		hWnd,     // Parent window
 		(HMENU)ID_PLAY,       // No menu.
-		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
-		NULL);      // Pointer not needed.
+		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),	NULL);      // Pointer not needed.
 	hwndButton2 = CreateWindow(
 		L"BUTTON",  // Predefined class; Unicode assumed 
 		L"SAIR",      // Button text 
@@ -354,8 +382,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 		80,        // Button height
 		hWnd,     // Parent window
 		(HMENU)ID_EXIT,       // No menu.
-		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),
-		NULL);      // Pointer not needed.
+		(HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE),	NULL);      // Pointer not needed.
 
 	PAINTSTRUCT PtStc;
 	InvalidateRect(hWnd, NULL, 1);
