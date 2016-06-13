@@ -48,6 +48,12 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\..\..\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\..\..\ground.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
     <Image Include="..\..\..\..\..\..\..\test.bmp">
       <Filter>Resource Files</Filter>
     </Image>

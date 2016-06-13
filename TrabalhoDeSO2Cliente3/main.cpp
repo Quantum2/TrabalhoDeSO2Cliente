@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <io.h>
+#include <sstream>
 #include <fcntl.h>
 #include <windows.h>
 #include <tchar.h>		// Para chamada à função "sprintf" 
@@ -25,6 +26,8 @@ HWND hwndButton;
 HWND hwndButton2;
 
 HBITMAP hBitmap = NULL;
+HBITMAP hBitmap2 = NULL;
+HBITMAP hBitmap3 = NULL;
 HINSTANCE inst = NULL;
 
 void actualizarMapa(HWND hw) {
@@ -35,6 +38,7 @@ void actualizarMapa(HWND hw) {
 	HGDIOBJ 	oldBitmap;
 	Mensagem mensa;
 	Mapa mapa;
+	int x, y;
 
 	mensa.pid = _getpid();
 	strcpy(mensa.msg, "actualizar");
@@ -44,15 +48,46 @@ void actualizarMapa(HWND hw) {
 	InvalidateRect(hw, NULL, 1);
 	hdc = BeginPaint(hw, &PtStc);
 	hdcMem = CreateCompatibleDC(hdc);
-	oldBitmap = SelectObject(hdcMem, hBitmap);
+	x = 0;
 
-	//desernhar bitmpas a apartir daqui
-	GetObject(hBitmap, sizeof(bitmap), &bitmap);
-	BitBlt(hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+	for (size_t i = 0; i < TAM_LABIRINTO; i++)
+	{
+		int counter = 0;
+		char* temp;
+
+		y = 0;
+		temp = mapa.mapaEnv[i];
+		string tempS(temp);
+		string buf; // Have a buffer string
+		stringstream ss(tempS); // Insert the string into a stream
+		vector<string> tokens; // Create vector to hold our words
+
+		while (ss >> buf)
+			tokens.push_back(buf);
+
+		for (size_t j = 0; j < tokens.size(); j++)
+		{
+			if (tokens[j] == "_")
+			{
+				//desernhar bitmpas a apartir daqui
+				oldBitmap = SelectObject(hdcMem, hBitmap2);
+				GetObject(hBitmap2, sizeof(bitmap), &bitmap);
+				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+			}
+			if (tokens[j] == "J")
+			{
+				//desernhar bitmpas a apartir daqui
+				oldBitmap = SelectObject(hdcMem, hBitmap);
+				GetObject(hBitmap, sizeof(bitmap), &bitmap);
+				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+			}
+			y = y + 50;
+		}
+		x = x + 50;
+	}
 
 	SelectObject(hdcMem, oldBitmap);
 	DeleteDC(hdcMem);
-
 	EndPaint(hw, &PtStc);
 }
 
@@ -233,6 +268,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	int pid = GetCurrentProcessId();
 	inst = hInst;
 	hBitmap = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
+	hBitmap2 = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP2), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
 
 	HWND hWnd;			// handler da janela (a gerar por CreateWindow())
 	MSG lpMsg;			// Estrutura das mensagens
