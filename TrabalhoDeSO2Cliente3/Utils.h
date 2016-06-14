@@ -5,7 +5,7 @@
 #include <Windows.h>
 
 #define BUFSIZE 2048
-#define TAM_LABIRINTO 50
+#define TAM_LABIRINTO 20
 
 using namespace std;
 

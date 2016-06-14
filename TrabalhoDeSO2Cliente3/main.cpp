@@ -4,6 +4,8 @@
 #include <sstream>
 #include <fcntl.h>
 #include <windows.h>
+#include <mutex>
+#include <cstdlib>
 #include <tchar.h>		// Para chamada à função "sprintf" 
 #include "Cliente.h"
 #include "Utils.h"
@@ -13,11 +15,14 @@
 #define TAM 255
 #define RES_X 800
 #define RES_Y 600
+#define TIME_TO_REFRESH 250
 #define cout wcout
 
 using namespace std;
 
 enum { ID_PLAY, ID_EXIT };
+
+mutex mtx;
 
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
@@ -91,6 +96,36 @@ void actualizarMapa(HWND hw) {
 	EndPaint(hw, &PtStc);
 }
 
+DWORD WINAPI thread_func(LPVOID lpParameter)
+{
+	HWND hw = (HWND)lpParameter;
+	Mensagem mensa;
+	Mapa temp1, temp2;
+	mensa.pid = _getpid();
+	strcpy_s(mensa.msg, "actualizar");
+
+	while (true)
+	{
+		mtx.lock();
+		cliente.enviarMensagem(mensa);
+		mtx.unlock();
+		temp1 = cliente.getMapa();
+		_sleep(TIME_TO_REFRESH);
+		mtx.lock();
+		cliente.enviarMensagem(mensa);
+		mtx.unlock();
+		temp2 = cliente.getMapa();
+
+		for (size_t i = 0; i < TAM_LABIRINTO; i++)
+		{
+			if (strcmp(temp1.mapaEnv[i], temp2.mapaEnv[i]) != 0)
+			{
+				actualizarMapa(hw);
+			}
+		}
+	}
+}
+
 void configurarMenuInicial(HWND hw) {
 	DestroyWindow(hwndButton);
 	DestroyWindow(hwndButton2);
@@ -105,6 +140,7 @@ void configurarMenuInicial(HWND hw) {
 	DeleteObject(NewBrush);
 	EndPaint(hw, &PtStc);
 
+	CreateThread(NULL, 0, thread_func, hw, 0, 0);
 	actualizarMapa(hw);
 }
 
@@ -121,6 +157,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 	TCHAR str[TAM];			// Buffer para caracteres recolhidos do teclado
 	static int resposta;	// Resultado de resposta à MsgBox
 	PAINTSTRUCT PtStc;		// Ponteiro para estrutura de WM_PAINT
+	Mensagem mensa;         // Stuff to send
+	mensa.pid = _getpid();  // Moar
 
 							// Processamento das mensagens
 	switch (messg) {
@@ -139,49 +177,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		
-		Mensagem mensa;
-
 		case VK_LEFT:
 			// Process the LEFT ARROW key. 
-			
 			strcpy_s(mensa.msg, "esquerda");
 			cliente.enviarMensagem(mensa);
-			strcpy_s(mensa.msg, "actualizar");
-			cliente.enviarMensagem(mensa);
+			actualizarMapa(hWnd);
 			break;
-
 		case VK_RIGHT:
-			
-
 			strcpy(mensa.msg, "direita");
 			cliente.enviarMensagem(mensa);
-			strcpy(mensa.msg, "actualizar");
-			cliente.enviarMensagem(mensa);
+			actualizarMapa(hWnd);
 			break;
-
-
 		case VK_UP:
-
-
 			strcpy(mensa.msg, "cima");
 			cliente.enviarMensagem(mensa);
-			strcpy(mensa.msg, "actualizar");
-			cliente.enviarMensagem(mensa);
+			actualizarMapa(hWnd);
 			break;
-
 		case VK_DOWN:
-
-
 			strcpy(mensa.msg, "baixo");
 			cliente.enviarMensagem(mensa);
-			strcpy(mensa.msg, "actualizar");
+			actualizarMapa(hWnd);
+			break;
+		case VK_ESCAPE:
+			strcpy_s(mensa.msg, "logout");
 			cliente.enviarMensagem(mensa);
+			exit(0);
+			break;
+		default:
 			break;
 		}
 	case WM_CHAR:
-	 
-		
 		//TOGGLES DO JOGADOR - armas, atacar - ficam aqui  
 		
 		/*if (wParam=='P' || wParama=='p') 
@@ -199,50 +224,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 			cliente.enviarMensagem(mensa);
 		 }
 		 */
-
-		//desactivei isto 
-
-		/*
-		// Activar Message Box (Yes, No, Cancel) e receber a resposta
-		resposta = MessageBox(hWnd, str, TEXT("Caracter Recebido"), MB_YESNOCANCEL | MB_ICONQUESTION);
-		// Limpar janela e forçar WM_PAINT
-		InvalidateRect(hWnd, NULL, 1);
-		 */
-		
-		// OutputDebugString(str); //serve  pra ver cenas na janela de output
-		
-
-		//LOGICA DE JOGO - Toggle de pedra, machado, mão -. fica aqui?
-
-
-
 		break;
-		//==============================================================================
-		// Mostrar resposta dada à MsgBox
-		//==============================================================================
 	case WM_PAINT:
-		// Afixar na janela a resposta que foi dada à MsgBox
-		
-		
 		hdc = BeginPaint(hWnd, &PtStc);
-		/*switch (resposta) {
-		case IDYES:
-			TextOut(hdc, 0, 0, TEXT("Confirmado     "), 15);
-			break;
-		case IDNO:
-			TextOut(hdc, 0, 0, TEXT("Não confirmado "), 15);
-			break;
-		case IDCANCEL:
-			TextOut(hdc, 0, 0, TEXT("Cancelado      "), 15);
-			break;
-		}
-		EndPaint(hWnd, &PtStc);
-		*/
-
 		break;
-		//==============================================================================
-		// Terminar e Processamentos default
-		//==============================================================================
 	case WM_DESTROY:
 		DeleteObject(hBitmap);
 		PostQuitMessage(0);
