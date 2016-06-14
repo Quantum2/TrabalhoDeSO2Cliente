@@ -184,11 +184,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		
 		//TOGGLES DO JOGADOR - armas, atacar - ficam aqui  
 		
-		/*if (wParam=='P' || wParama=='p') togglePedra();
-		 else if (wParam == 'M' || wParam == 'm') toggleMachado();
-		 else if (wParam == ' ') atacar();
-		*/
-
+		/*if (wParam=='P' || wParama=='p') 
+		{
+			strcpy(mensa.msg, "pedra");
+			cliente.enviarMensagem(mensa);
+		}
+		 else if (wParam == 'M' || wParam == 'm')
+		 {
+			strcpy(mensa.msg, "machado");
+			cliente.enviarMensagem(mensa);
+		 }
+		 else if (wParam == ' ')  {
+			strcpy(mensa.msg, "atacar");
+			cliente.enviarMensagem(mensa);
+		 }
+		 */
 
 		//desactivei isto 
 
