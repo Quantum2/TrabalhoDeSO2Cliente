@@ -160,8 +160,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\..\..\bitmap2.bmp" />
+    <Image Include="..\..\..\..\..\..\..\bitmap3.bmp" />
     <Image Include="..\..\..\..\..\..\..\ground.bmp" />
     <Image Include="..\..\..\..\..\..\..\test.bmp" />
+    <Image Include="..\..\..\..\..\..\..\testM.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,6 +11,7 @@
 #include "Utils.h"
 #include "resource.h"
 #include "Jogo.h"
+#pragma comment(lib, "Msimg32.lib")
 
 #define TAM 255
 #define RES_X 800
@@ -84,6 +85,13 @@ void actualizarMapa(HWND hw) {
 				//desenhar bitmaps a partir daqui
 				oldBitmap = SelectObject(hdcMem, hBitmap);
 				GetObject(hBitmap, sizeof(bitmap), &bitmap);
+				TransparentBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, 50, 50, RGB(255,255,255));
+			}
+			if (tokens[j] == "M")
+			{
+				//desenhar bitmaps a partir daqui
+				oldBitmap = SelectObject(hdcMem, hBitmap3);
+				GetObject(hBitmap3, sizeof(bitmap), &bitmap);
 				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
 			}
 			y = y + 50;
@@ -298,6 +306,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	inst = hInst;
 	hBitmap = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
 	hBitmap2 = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP2), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
+	hBitmap3 = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP3), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
 
 	HWND hWnd;			// handler da janela (a gerar por CreateWindow())
 	MSG lpMsg;			// Estrutura das mensagens
