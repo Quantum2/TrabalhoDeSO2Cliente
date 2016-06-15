@@ -93,6 +93,13 @@ void actualizarMapa(HWND hw) {
 				GetObject(hBitmap2, sizeof(bitmap), &bitmap);
 				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
 			}
+			if (tokens[j] == "M")
+			{
+				//desenhar bitmaps a partir daqui
+				oldBitmap = SelectObject(hdcMem, hBitmap3);
+				GetObject(hBitmap3, sizeof(bitmap), &bitmap);
+				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+			}
 			if (tokens[j] == "J")
 			{
 				//desenhar bitmaps a partir daqui
@@ -108,13 +115,6 @@ void actualizarMapa(HWND hw) {
 				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
 			}
 			*/
-			if (tokens[j] == "M")
-			{
-				//desenhar bitmaps a partir daqui
-				oldBitmap = SelectObject(hdcMem, hBitmap3);
-				GetObject(hBitmap3, sizeof(bitmap), &bitmap);
-				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
-			}
 			y = y + 50;
 		}
 		x = x + 50;
