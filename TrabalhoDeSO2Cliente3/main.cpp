@@ -89,14 +89,15 @@ void actualizarMapa(HWND hw) {
 				GetObject(hBitmap, sizeof(bitmap), &bitmap);
 				TransparentBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, 50, 50, RGB(255,255,255));
 			}
-
+			
+			/*
 			if (tokens[j] == "P")
 			{
 				oldBitmap = SelectObject(hdcMem, hBitmap3);
 				GetObject(hBitmap3, sizeof(bitmap), &bitmap);
 				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
 			}
-
+			*/
 			if (tokens[j] == "M")
 			{
 				//desenhar bitmaps a partir daqui
@@ -288,6 +289,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			EndDialog(hWndDlg, 0);
 			return TRUE;
 		case IDC_BUTTON1:
+
 			Mensagem mensa;
 			TCHAR temp[TAM];
 			string tempS;
@@ -295,12 +297,16 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 			mensa.pid = _getpid();
 			wstring ws(temp);
+			if (ws.empty()) break; // nao entra sem nome no login - fazia rebenter na adiçao de jogador
+
 			tempS = "login " + string(ws.begin(), ws.end());
+			
 			strcpy_s(mensa.msg, tempS.c_str());
+			
 
 			cliente.enviarMensagem(mensa);
 			EndDialog(hWndDlg, NULL);
-
+			
 			return TRUE;
 		}
 		break;
