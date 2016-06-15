@@ -25,6 +25,9 @@ enum { ID_PLAY, ID_EXIT };
 
 mutex mtx;
 
+int coordCantoX = 0;
+int coordCantoY = 0;
+
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
 
@@ -56,7 +59,7 @@ void actualizarMapa(HWND hw) {
 	hdcMem = CreateCompatibleDC(hdc);
 	x = 0;
 
-	for (size_t i = 0; i < TAM_LABIRINTO; i++)
+	for (size_t i = coordCantoX; i < TAM_LABIRINTO; i++)
 	{
 		int counter = 0;
 		char* temp;
@@ -71,7 +74,7 @@ void actualizarMapa(HWND hw) {
 		while (ss >> buf)
 			tokens.push_back(buf);
 
-		for (size_t j = 0; j < tokens.size(); j++)
+		for (size_t j = coordCantoY; j < tokens.size(); j++)
 		{
 			if (tokens[j] == "_")
 			{
@@ -232,6 +235,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 			cliente.enviarMensagem(mensa);
 		 }
 		 */
+		if (wParam == 'W' || wParam == 'w')
+		{
+			if (coordCantoY > 0)
+			{
+				coordCantoY--;
+				actualizarMapa(hWnd);
+			}
+		}
+		if (wParam == 'S' || wParam == 's')
+		{
+			if (coordCantoY < TAM_LABIRINTO)
+			{
+				coordCantoY++;
+				actualizarMapa(hWnd);
+			}
+		}
+		if (wParam == 'A' || wParam == 'a')
+		{
+			if (coordCantoX > 0)
+			{
+				coordCantoX--;
+				actualizarMapa(hWnd);
+			}
+		}
+		if (wParam == 'D' || wParam == 'd')
+		{
+			if (coordCantoX < TAM_LABIRINTO)
+			{
+				coordCantoX++;
+				actualizarMapa(hWnd);
+			}
+		}
 		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &PtStc);
