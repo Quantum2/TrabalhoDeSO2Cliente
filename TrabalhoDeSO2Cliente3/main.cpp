@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <mutex>
 #include <cstdlib>
-#include <tchar.h>		// Para chamada à função "sprintf" 
+#include <tchar.h>		
 #include "Cliente.h"
 #include "Utils.h"
 #include "resource.h"
@@ -34,9 +34,11 @@ Cliente cliente;
 HWND hwndButton;
 HWND hwndButton2;
 
-HBITMAP hBitmap = NULL;
-HBITMAP hBitmap2 = NULL;
-HBITMAP hBitmap3 = NULL;
+HBITMAP hBitmap = NULL; //cavaleiro
+HBITMAP hBitmap2 = NULL; //chao
+HBITMAP hBitmap3 = NULL; //machado
+HBITMAP hBitmap4 = NULL; //pedra
+
 HINSTANCE inst = NULL;
 
 void actualizarMapa(HWND hw) {
@@ -90,6 +92,15 @@ void actualizarMapa(HWND hw) {
 				GetObject(hBitmap, sizeof(bitmap), &bitmap);
 				TransparentBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, 50, 50, RGB(255,255,255));
 			}
+			
+			/*
+			if (tokens[j] == "P")
+			{
+				oldBitmap = SelectObject(hdcMem, hBitmap3);
+				GetObject(hBitmap3, sizeof(bitmap), &bitmap);
+				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+			}
+			*/
 			if (tokens[j] == "M")
 			{
 				//desenhar bitmaps a partir daqui
@@ -158,7 +169,7 @@ void configurarMenuInicial(HWND hw) {
 // ============================================================================
 // FUNÇÂO DE PROCESSAMENTO DA JANELA
 // Neste exemplo vamos processar as mensagens:
-//		WM_CHAR				Guardar o caracter digitado nu buffer (sem mostrar)
+//		WM_CHAR				Guardar o caracter digitado no buffer (sem mostrar)
 //							Chamar InvalidateRect() para originar WM_PAINT
 //		WM_PAINT			Mostrar o conteúdo do buffer com TextOut()
 // ============================================================================
@@ -313,6 +324,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			EndDialog(hWndDlg, 0);
 			return TRUE;
 		case IDC_BUTTON1:
+
 			Mensagem mensa;
 			TCHAR temp[TAM];
 			string tempS;
@@ -320,12 +332,16 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 			mensa.pid = _getpid();
 			wstring ws(temp);
+			if (ws.empty()) break; // nao entra sem nome no login - fazia rebenter na adiçao de jogador
+
 			tempS = "login " + string(ws.begin(), ws.end());
+			
 			strcpy_s(mensa.msg, tempS.c_str());
+			
 
 			cliente.enviarMensagem(mensa);
 			EndDialog(hWndDlg, NULL);
-
+			
 			return TRUE;
 		}
 		break;
