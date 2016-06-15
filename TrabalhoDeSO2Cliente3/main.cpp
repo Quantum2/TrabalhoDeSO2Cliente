@@ -94,7 +94,6 @@ void actualizarMapa(HWND hw) {
 				GetObject(hBitmap, sizeof(bitmap), &bitmap);
 				TransparentBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, 50, 50, RGB(255,255,255));
 			}
-			
 			/*
 			if (tokens[j] == "P")
 			{
@@ -380,7 +379,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	wcApp.lpszMenuName = NULL;						// Janela sem menus
 	wcApp.cbClsExtra = 0;							// Livre, para uso particular
 	wcApp.cbWndExtra = 0;							// Livre, para uso particular
-	wcApp.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);	// Fundo branco
+	wcApp.hbrBackground = 0; //(HBRUSH)GetStockObject(WHITE_BRUSH);	// Fundo branco
 
 																// ============================================================================
 																// Registar a classe "wcApp" 
