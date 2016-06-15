@@ -53,8 +53,10 @@ void actualizarMapa(HWND hw) {
 
 	mensa.pid = _getpid();
 	strcpy(mensa.msg, "actualizar");
+	mtx.lock();
 	cliente.enviarMensagem(mensa);
 	mapa = cliente.getMapa();
+	mtx.unlock();
 
 	InvalidateRect(hw, NULL, 1);
 	hdc = BeginPaint(hw, &PtStc);
@@ -230,7 +232,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		}
 	case WM_CHAR:
 		//TOGGLES DO JOGADOR - armas, atacar - ficam aqui  
-		
 		/*if (wParam=='P' || wParama=='p') 
 		{
 			strcpy(mensa.msg, "pedra");
@@ -256,7 +257,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		}
 		if (wParam == 'S' || wParam == 's')
 		{
-			if (coordCantoY < TAM_LABIRINTO)
+			if (coordCantoY < TAM_LABIRINTO - 12)
 			{
 				coordCantoY++;
 				actualizarMapa(hWnd);
@@ -272,7 +273,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		}
 		if (wParam == 'D' || wParam == 'd')
 		{
-			if (coordCantoX < TAM_LABIRINTO)
+			if (coordCantoX < TAM_LABIRINTO - 16)
 			{
 				coordCantoX++;
 				actualizarMapa(hWnd);
