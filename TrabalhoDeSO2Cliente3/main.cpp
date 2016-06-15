@@ -27,7 +27,7 @@ mutex mtx;
 
 int coordCantoX = 0;
 int coordCantoY = 0;
-
+int hp;
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
 
@@ -40,7 +40,6 @@ HBITMAP hBitmap3 = NULL; //machado
 HBITMAP hBitmap4 = NULL; 
 
 HINSTANCE inst = NULL;
-
 void actualizarMapa(HWND hw) {
 	PAINTSTRUCT PtStc;
 	BITMAP 		bitmap;
@@ -83,6 +82,10 @@ void actualizarMapa(HWND hw) {
 		outCoords.append(L"  Y: ");
 		outCoords.append(to_wstring(coordCantoY));
 		TextOut(hdc, 0, 0, outCoords.c_str(), outCoords.size());
+
+		wstring vidaJog = L"HP: ";
+		vidaJog.append(to_wstring(hp));
+		TextOut(hdc, 700, 0, vidaJog.c_str(), vidaJog.size());
 
 		for (size_t j = coordCantoY; j < tokens.size(); j++)
 		{
@@ -266,6 +269,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 			{
 				coordCantoY++;
 				actualizarMapa(hWnd);
+				
 			}
 		}
 		if (wParam == 'A' || wParam == 'a')
@@ -359,6 +363,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
  {
 	int res = cliente.connect();
+	hp=cliente.vida ;
 	int pid = GetCurrentProcessId();
 	inst = hInst;
 	hBitmap = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here

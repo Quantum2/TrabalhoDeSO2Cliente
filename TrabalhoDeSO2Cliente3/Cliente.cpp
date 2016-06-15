@@ -124,6 +124,7 @@ int Cliente::connect(string texto) {
 			break;
 
 		printf(L"\"%s\"\n", chBuf.msg);
+		
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)

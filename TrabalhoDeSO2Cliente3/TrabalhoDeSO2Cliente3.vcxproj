@@ -165,7 +165,7 @@
     <Image Include="..\..\..\..\..\..\..\pedra.bmp" />
     <Image Include="..\..\..\..\..\..\..\test.bmp" />
     <Image Include="..\..\..\..\..\..\..\testM.bmp" />
-    <Image Include="..\..\..\..\..\..\pedra.bmp" />
+ 
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
