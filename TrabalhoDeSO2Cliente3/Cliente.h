@@ -20,14 +20,13 @@ private:
 	BOOL   fSuccess;
 	DWORD  cbRead, cbToWrite, cbWritten, dwMode;
 	LPTSTR lpszPipename = TEXT("\\\\.\\pipe\\mynamedpipe");
-
 	Jogo jogo;
-
 	static void compareBuffer(Mensagem buffer);
 public:
 	Cliente();
 	~Cliente();
 	int vida;
+	string anteriorM;
 	int connect();
 	int connect(string texto);
 	void enviarMensagem(Mensagem m);

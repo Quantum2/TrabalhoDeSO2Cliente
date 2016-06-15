@@ -3,7 +3,6 @@
 #define cout wcout
 #define printf wprintf
 
-static string anteriorM;
 static int modoJogo = 0;
 Mapa mapaLocal;
 
@@ -11,7 +10,7 @@ void Cliente::compareBuffer(Mensagem buffer)
 {
 	string temp = buffer.msg;
 	string entrada;
-
+	/*
 	if (temp == "EM FASE DE JOGO!!!" && anteriorM != temp)
 	{
 		cout << "Modo de jogo";
@@ -20,7 +19,7 @@ void Cliente::compareBuffer(Mensagem buffer)
 	if (temp == "EM FASE DE SAIR!!!" && anteriorM != temp) {
 		modoJogo = 2;
 	}
-	anteriorM = buffer.msg;
+	anteriorM = buffer.msg;*/
 }
 
 Cliente::Cliente()
@@ -230,6 +229,8 @@ void Cliente::enviarMensagem(Mensagem m) {
 
 		compareBuffer(chBuf);
 		cout << chBuf.msg << endl;
+		string temp(chBuf.msg);
+		anteriorM = temp;
 		mapaLocal = chBuf.mapa;
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 

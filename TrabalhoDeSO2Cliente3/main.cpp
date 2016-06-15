@@ -331,7 +331,6 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 			EndDialog(hWndDlg, 0);
 			return TRUE;
 		case IDC_BUTTON1:
-
 			Mensagem mensa;
 			TCHAR temp[TAM];
 			string tempS;
@@ -339,15 +338,45 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 			mensa.pid = _getpid();
 			wstring ws(temp);
-			if (ws.empty()) break; // nao entra sem nome no login - fazia rebenter na adiçao de jogador
+			if (ws.empty()) {
+				int msgboxID = MessageBox(
+					NULL,
+					(LPCWSTR)L"Têm de introduzir um username válido\nTente novamente",
+					(LPCWSTR)L"Username inválido",
+					MB_ICONWARNING | MB_OK | MB_DEFBUTTON2
+					);
+
+				switch (msgboxID)
+				{
+				case IDOK:
+					return FALSE;
+					break;
+				}
+			}
 
 			tempS = "login " + string(ws.begin(), ws.end());
 			
 			strcpy_s(mensa.msg, tempS.c_str());
 			
-
 			cliente.enviarMensagem(mensa);
 			EndDialog(hWndDlg, NULL);
+
+			LPWSTR msgAnterior = TEXT("TESTESTESTETSTWTSADSADASDASDASD");
+			msgAnterior = convertCharArrayToLPCWSTR(cliente.anteriorM.c_str());
+
+			int msgboxID = MessageBox(
+				NULL,
+				msgAnterior,
+				(LPCWSTR)L"Info de jogador",
+				MB_ICONINFORMATION | MB_OK | MB_DEFBUTTON2
+				);
+
+			switch (msgboxID)
+			{
+			case IDOK:
+				return TRUE;
+				break;
+			}
 			
 			return TRUE;
 		}
