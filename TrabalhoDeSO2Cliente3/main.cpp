@@ -34,9 +34,9 @@ Cliente cliente;
 HWND hwndButton;
 HWND hwndButton2;
 
-HBITMAP hBitmap = NULL; //cavaleiro
-HBITMAP hBitmap2 = NULL; //chao
-HBITMAP hBitmap3 = NULL; //machado
+HBITMAP hBitmap = NULL; 
+HBITMAP hBitmap2 = NULL; 
+HBITMAP hBitmap3 = NULL; 
 HBITMAP hBitmap4 = NULL; 
 
 HINSTANCE inst = NULL;
@@ -46,6 +46,7 @@ void actualizarMapa(HWND hw) {
 	BITMAP 		bitmap;
 	HDC			hdc;
 	HDC 		hdcMem;
+	HDC			hdcBuffer;
 	HGDIOBJ 	oldBitmap;
 	Mensagem mensa;
 	Mapa mapa;
@@ -53,6 +54,7 @@ void actualizarMapa(HWND hw) {
 
 	mensa.pid = _getpid();
 	strcpy(mensa.msg, "actualizar");
+
 	mtx.lock();
 	cliente.enviarMensagem(mensa);
 	mapa = cliente.getMapa();
@@ -61,6 +63,7 @@ void actualizarMapa(HWND hw) {
 	InvalidateRect(hw, NULL, 1);
 	hdc = BeginPaint(hw, &PtStc);
 	hdcMem = CreateCompatibleDC(hdc);
+	hdcBuffer = CreateCompatibleDC(hdc);
 	x = 0;
 
 	for (size_t i = coordCantoX; i < TAM_LABIRINTO; i++)
@@ -77,12 +80,6 @@ void actualizarMapa(HWND hw) {
 
 		while (ss >> buf)
 			tokens.push_back(buf);
-
-		wstring outCoords = L"Coordenadas X: ";
-		outCoords.append(to_wstring(coordCantoX));
-		outCoords.append(L"  Y: ");
-		outCoords.append(to_wstring(coordCantoY));
-		TextOut(hdc, 0, 0, outCoords.c_str(), outCoords.size());
 
 		for (size_t j = coordCantoY; j < tokens.size(); j++)
 		{
@@ -107,21 +104,25 @@ void actualizarMapa(HWND hw) {
 				GetObject(hBitmap, sizeof(bitmap), &bitmap);
 				TransparentBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, 50, 50, RGB(255,255,255));
 			}
-			/*
-			if (tokens[j] == "P")
-			{
-				oldBitmap = SelectObject(hdcMem, hBitmap3);
-				GetObject(hBitmap3, sizeof(bitmap), &bitmap);
-				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
-			}
-			*/
 			y = y + 50;
 		}
 		x = x + 50;
 	}
 
+	//Imprimir topo
+	wstring outCoords = L"Coordenadas X: ";
+	outCoords.append(to_wstring(coordCantoX));
+	outCoords.append(L"  Y: ");
+	outCoords.append(to_wstring(coordCantoY));
+	TextOut(hdc, 0, 0, outCoords.c_str(), outCoords.size());
+
+	// Transfer the off-screen DC to the screen
+	BitBlt(hdc, 0, 0, RES_X, RES_Y, hdcBuffer, 0, 0, SRCCOPY);
+	
+	// Free-up the off-screen DC
 	SelectObject(hdcMem, oldBitmap);
 	DeleteDC(hdcMem);
+	DeleteDC(hdcBuffer);
 	EndPaint(hw, &PtStc);
 }
 
@@ -379,7 +380,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 										// ("hInst" é parâmetro de WinMain)
 	wcApp.lpszClassName = szProgName;	// Nome da janela 
 	wcApp.lpfnWndProc = WndProc;		// Endereço da função de processamento da janela 
-	wcApp.style = CS_HREDRAW | CS_VREDRAW;			// Fazer o redraw hor. e vert. se mudar
+	wcApp.style = 0;			// Fazer o redraw hor. e vert. se mudar
 	wcApp.hIcon = LoadIcon(NULL, IDI_APPLICATION);	// ícon normal=Aplicação do Windows
 	wcApp.hIconSm = LoadIcon(NULL, IDI_WINLOGO);	// ícon pequeno=Ícon WinLogo
 	wcApp.hCursor = LoadCursor(NULL, IDC_ARROW);	// rato = "seta"
