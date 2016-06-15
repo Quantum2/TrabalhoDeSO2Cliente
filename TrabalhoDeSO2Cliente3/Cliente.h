@@ -27,7 +27,7 @@ private:
 public:
 	Cliente();
 	~Cliente();
-	int vida;
+	int vidaCliente;
 	int connect();
 	int connect(string texto);
 	void enviarMensagem(Mensagem m);

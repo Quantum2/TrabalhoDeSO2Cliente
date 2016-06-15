@@ -30,7 +30,7 @@ int coordCantoY = 0;
 
 TCHAR szProgName[] = TEXT("MostrarMessageBox");
 Cliente cliente;
-
+int HP;
 HWND hwndButton;
 HWND hwndButton2;
 
@@ -115,6 +115,10 @@ void actualizarMapa(HWND hw) {
 	outCoords.append(L"  Y: ");
 	outCoords.append(to_wstring(coordCantoY));
 	TextOut(hdc, 0, 0, outCoords.c_str(), outCoords.size());
+	wstring vidaJog = L"HP: ";
+	vidaJog.append(to_wstring(HP));
+	TextOut(hdc, 700, 0, vidaJog.c_str(), vidaJog.size());
+
 
 	// Transfer the off-screen DC to the screen
 	BitBlt(hdc, 0, 0, RES_X, RES_Y, hdcBuffer, 0, 0, SRCCOPY);
@@ -360,6 +364,7 @@ LRESULT CALLBACK DlgProc(HWND hWndDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
  {
 	int res = cliente.connect();
+	HP=cliente.vidaCliente;
 	int pid = GetCurrentProcessId();
 	inst = hInst;
 	hBitmap = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
