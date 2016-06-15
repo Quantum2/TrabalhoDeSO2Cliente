@@ -78,6 +78,12 @@ void actualizarMapa(HWND hw) {
 		while (ss >> buf)
 			tokens.push_back(buf);
 
+		wstring outCoords = L"Coordenadas X: ";
+		outCoords.append(to_wstring(coordCantoX));
+		outCoords.append(L"  Y: ");
+		outCoords.append(to_wstring(coordCantoY));
+		TextOut(hdc, 0, 0, outCoords.c_str(), outCoords.size());
+
 		for (size_t j = coordCantoY; j < tokens.size(); j++)
 		{
 			if (tokens[j] == "_")
