@@ -123,8 +123,6 @@ int Cliente::connect(string texto) {
 			break;
 
 		printf(L"\"%s\"\n", chBuf.msg);
-		chBuf.vida=vidaCliente;
-		
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
 	if (!fSuccess)
@@ -199,6 +197,7 @@ int Cliente::connect() {
 void Cliente::enviarMensagem(Mensagem m) {
 	// Send a message to the pipe server. 
 	cbToWrite = sizeof(m);
+	m.pid = _getpid();
 	cout << "Sending " << cbToWrite << " byte message: " << m.msg << endl;
 
 	fSuccess = WriteFile(
@@ -232,6 +231,7 @@ void Cliente::enviarMensagem(Mensagem m) {
 		cout << chBuf.msg << endl;
 		string temp(chBuf.msg);
 		anteriorM = temp;
+		vida = chBuf.vida;
 		mapaLocal = chBuf.mapa;
 	} while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
 
