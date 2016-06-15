@@ -17,7 +17,7 @@ private:
 public:
 	Jogador(string nome, int p);
 	~Jogador();
-	int getPid();
+	//int getPid();
 };
 
 class Labirinto
