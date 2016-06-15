@@ -246,12 +246,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT messg, WPARAM wParam, LPARAM lParam)   
 		 {
 			strcpy(mensa.msg, "machado");
 			cliente.enviarMensagem(mensa);
-		 }
-		 else if (wParam == ' ')  {
+		 }*/
+		  if (wParam == ' ')  {
 			strcpy(mensa.msg, "atacar");
 			cliente.enviarMensagem(mensa);
 		 }
-		 */
+		 
 		if (wParam == 'W' || wParam == 'w')
 		{
 			if (coordCantoY > 0)
