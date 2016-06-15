@@ -162,6 +162,7 @@
     <Image Include="..\..\..\..\..\..\..\bitmap2.bmp" />
     <Image Include="..\..\..\..\..\..\..\bitmap3.bmp" />
     <Image Include="..\..\..\..\..\..\..\ground.bmp" />
+    <Image Include="..\..\..\..\..\..\..\pedra.bmp" />
     <Image Include="..\..\..\..\..\..\..\test.bmp" />
     <Image Include="..\..\..\..\..\..\..\testM.bmp" />
     <Image Include="..\..\..\..\..\..\pedra.bmp" />

@@ -37,7 +37,7 @@ HWND hwndButton2;
 HBITMAP hBitmap = NULL; //cavaleiro
 HBITMAP hBitmap2 = NULL; //chao
 HBITMAP hBitmap3 = NULL; //machado
-HBITMAP hBitmap4 = NULL; //pedra
+HBITMAP hBitmap4 = NULL; 
 
 HINSTANCE inst = NULL;
 
@@ -364,6 +364,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nC
 	hBitmap = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
 	hBitmap2 = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP2), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
 	hBitmap3 = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP3), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
+	hBitmap4 = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP4), IMAGE_BITMAP, 0, 0, LR_SHARED);  //Load bitmaps here
 
 	HWND hWnd;			// handler da janela (a gerar por CreateWindow())
 	MSG lpMsg;			// Estrutura das mensagens
