@@ -94,7 +94,7 @@ void actualizarMapa(HWND hw) {
 				//desenhar bitmaps a partir daqui
 				oldBitmap = SelectObject(hdcMem, hBitmap3);
 				GetObject(hBitmap3, sizeof(bitmap), &bitmap);
-				BitBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+				TransparentBlt(hdc, x, y, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, 50, 50, RGB(251, 251, 251));
 			}
 			if (tokens[j] == "J")
 			{
